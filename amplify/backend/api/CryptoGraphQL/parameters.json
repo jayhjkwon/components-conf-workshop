@@ -1,5 +1,11 @@
 {
     "AppSyncApiName": "CryptoGraphQL",
     "DynamoDBBillingMode": "PAY_PER_REQUEST",
-    "DynamoDBEnableServerSideEncryption": "false"
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authamplifyreactappc64587b0",
+            "Outputs.UserPoolId"
+        ]
+    }
 }
