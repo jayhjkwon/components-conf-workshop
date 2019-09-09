@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { API, graphqlOperation } from 'aws-amplify'
 import { withAuthenticator } from 'aws-amplify-react'
 import { listCoins } from './graphql/queries'
@@ -33,6 +33,22 @@ function reducer(state, action) {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [coins, updateCoins] = useState([])
+
+  async function getCoinData() {
+    try {
+      // const data = await API.get('cryptoapi', '/coins')
+      const data = await API.get('cryptoapi', '/coins?limit=5&start=100')
+      console.log('data from Lambda REST API: ', data)
+      updateCoins(data.coins)
+    } catch (err) {
+      console.log('error fetching data..', err)
+    }
+  }
+
+  useEffect(() => {
+    getCoinData()
+  }, [])
 
   useEffect(() => {
     getData()
@@ -114,7 +130,19 @@ function App() {
           </div>
         ))
       }
+      <hr />
+      <div>
+        {
+          coins.map((c, i) => (
+            <div key={i}>
+              <h2>{c.name}</h2>
+              <p>{c.price_usd}</p>
+            </div>
+          ))
+        }
+      </div>
     </div>
+    
   )
 }
 
